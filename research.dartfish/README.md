@@ -1,11 +1,13 @@
 Requirements:
 
-* To run, you must have java installed on your computer.
+* To run, you must have Java SE installed on your computer.
 
 	To install java, google:
-	Install Java
+	Java SE
 
 	Click on first link, do what it says.
+
+	You do *not* need enterprise java. Just SE is fine.
 
 
 * You must hook up your data
