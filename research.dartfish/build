@@ -1,0 +1,7 @@
+set -x
+
+rm -rf bin
+mkdir bin
+find . -name "*.java" > sources.txt
+javac @sources.txt -d bin/ -cp libs/commons-csv-1.1/commons-csv-1.1.jar:libs/vecmath.jar
+rm sources.txt
