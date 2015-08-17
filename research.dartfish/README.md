@@ -24,11 +24,13 @@ Running:
 
 
 * To clean a previous run, type
-./clean
+	./clean
 
+* To build the source files (only have to do once), type
+	./build
 
 * To run, type
-./run
+	./run
 
 * To archive a run, type
-./archive-run
+	./archive-run
