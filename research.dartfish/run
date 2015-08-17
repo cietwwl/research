@@ -1,0 +1,4 @@
+# tee makes it so the output goes to both the file and the screen
+
+java -cp bin:libs/commons-csv-1.1/commons-csv-1.1.jar:libs/vecmath.jar research.dartfish.DartfishRun 2>&1 | tee data/run.log
+

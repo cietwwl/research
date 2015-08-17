@@ -1,0 +1,5 @@
+set -x
+
+rm data/clean
+cd data && ln -s "$1" clean
+
