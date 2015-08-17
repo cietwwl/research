@@ -1,0 +1,3 @@
+V=`date "+%Y%m%d_%H%M%S"`
+echo $V
+tar czvf data-${V}.tar.gz --exclude='data/clean' data
