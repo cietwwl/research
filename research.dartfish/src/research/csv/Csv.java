@@ -4,6 +4,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,6 +17,7 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 
 import research.math.Vector3;
+import research.util.Sortz;
 
 public class Csv
 {
@@ -198,10 +201,20 @@ public class Csv
 	public void write (String outFileName) throws IOException
 	{
 		FileWriter out = new FileWriter(outFileName);
-		CSVPrinter csvPrinter = CSVFormat.TDF.withHeader(getExplodedColumns()).print(out);
+		String[] allColumns = getExplodedColumns();
+		
+		Map<String,Integer> columnIndexes = new HashMap<String, Integer>();
+		for (String s : allColumns)
+			columnIndexes.put(s, columnIndexes.size());
+		
+		String[] sortedColumns = getExplodedColumns();
+		Arrays.sort(sortedColumns, new Sortz.SortIgnoreCase());
+		
+		CSVPrinter csvPrinter = CSVFormat.TDF.withHeader(sortedColumns).print(out);
 		
 		for (Map<String, Object> row : rows)
 		{
+			ArrayList<Object> r = new ArrayList<Object>();
 			for (Entry<String, ColumnType> e : columns.entrySet())
 			{
 				Object o = row.get(e.getKey());
@@ -209,16 +222,16 @@ public class Csv
 				{
 					if (o == null)
 					{
-						csvPrinter.print("");
-						csvPrinter.print("");
-						csvPrinter.print("");
+						r.add("");
+						r.add("");
+						r.add("");
 					}
 					else
 					{
 						Vector3 v = (Vector3)o;
-						csvPrinter.print(v.x);
-						csvPrinter.print(v.y);
-						csvPrinter.print(v.z);
+						r.add(v.x);
+						r.add(v.y);
+						r.add(v.x);
 					}
 					
 				}
@@ -226,15 +239,18 @@ public class Csv
 				{
 					if (o==null)
 					{
-						csvPrinter.print("");
+						r.add("");
 					}
 					else
 					{
-						csvPrinter.print (o);
+						r.add(o);
 					}
 				}
 			}
 			
+			for (String c : sortedColumns)
+				csvPrinter.print(r.get(columnIndexes.get(c)));
+				
 			csvPrinter.println();
 		}
 		
@@ -250,22 +266,31 @@ public class Csv
 			return prefix + ":" + key;
 	}
 
+	public String[] getExplodedColumnsForKey (String k)
+	{
+		String key = fullKeyValue(k);
+		ColumnType value = columns.get(k);
+		if (value == ColumnType.Vector)
+		{
+			return new String[] {
+				key + ":X",
+				key + ":Y",
+				key + ":Z"
+			};
+		}
+
+		return new String[] {
+			key
+		};
+	}
+	
 	public String[] getExplodedColumns ()
 	{
 		ArrayList<String> c = new ArrayList<String>();
 		for (Entry<String, ColumnType> e : columns.entrySet())
 		{
-			String key = fullKeyValue(e.getKey());
-			if (e.getValue() == ColumnType.Vector)
-			{
-				c.add(key + ":X");
-				c.add(key + ":Y");
-				c.add(key + ":Z");
-			}
-			else
-			{
-				c.add(key);
-			}
+			for (String column : getExplodedColumnsForKey(e.getKey()))
+				c.add(column);
 		}
 		
 		return c.toArray(new String[0]);

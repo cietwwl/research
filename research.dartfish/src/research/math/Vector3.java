@@ -75,4 +75,33 @@ public class Vector3 extends Vector3d
 		
 		return r;
 	}
+	
+	public Vector3 cross (Vector3 rhs)
+	{
+		Vector3 result = new Vector3();
+		result.cross(this, rhs);
+		return result;
+	}
+	
+	public Vector3 unitize ()
+	{
+		Vector3 result = new Vector3(this);
+		result.normalize();
+		
+		return result;
+	}
+	
+	static public Vector3
+		UnitX = new Vector3(1,0,0), 
+		UnitY = new Vector3(0,1,0), 
+		UnitZ = new Vector3(0,0,1),
+
+		UnitNegX = new Vector3(-1,0,0), 
+		UnitNegY = new Vector3(0,-1,0), 
+		UnitNegZ = new Vector3(0,0,-1),
+
+		UnitX_Z = new Vector3(1,0,1), 
+		Unit_YZ = new Vector3(0,1,1), 
+		UnitXY_ = new Vector3(1,1,0);
+	
 }
