@@ -61,6 +61,8 @@ public class DartfishRun
 	
 	static public void calculateFinal () throws Exception
 	{
+		CalculateFinal calculator = new CalculateFinal();
+
 		List<String> files = Filez.findAllFilesWithExtension("data/processed", "tsv");
 		for (String inFile : files)
 		{
@@ -74,7 +76,6 @@ public class DartfishRun
 			Filez.ensureDirectory(Filez.getDirectoryPart(outFile));
 			try
 			{
-				CalculateFinal calculator = new CalculateFinal();
 				calculator.process(inFile, outFile);
 			}
 			catch (Exception e)
@@ -82,6 +83,8 @@ public class DartfishRun
 				log.println(e);
 			}
 		}
+		
+		calculator.finish("data/final/final.tsv");
 	}
 	
 	static public void main(String[] args) throws Exception

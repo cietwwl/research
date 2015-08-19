@@ -23,6 +23,13 @@ public class CalculateFinal
 	THRESHOLD_OF_MAX_MID_VELOCITY = 0.50,
 	THRESHOLD_OF_MAX_STOP_VELOCITY = 0.05;
 
+	CsvOut finalCsv = new CsvOut();
+	
+	public CalculateFinal () throws Exception
+	{
+		
+	}
+	
 	public void process(String inFileName, String outFileName) throws IOException
 	{
 		CsvIn csvIn = new CsvIn(inFileName);
@@ -83,6 +90,20 @@ public class CalculateFinal
 					"maxWristSpeed", maxWristSpeed,
 					"threshold", wristSpeedStopThreshold
 				);
+				
+				//----
+				
+				if (inFileName.toLowerCase().contains("/rt"))
+				{
+					finalCsv.addRow(
+						"Subject", csvIn.prefix, 
+						"FileName", inFileName,
+						"VSHON", csvIn.getRow(begin.second).get("shoulderAngle"),
+						"VSHOFF", csvIn.getRow(end.second).get("shoulderAngle"),
+						"VELON", csvIn.getRow(begin.second).get("elbowAngle"),
+						"VELOFF", csvIn.getRow(end.second).get("elbowAngle")
+					);
+				}
 			}
 			catch (Exception e)
 			{
@@ -93,6 +114,11 @@ public class CalculateFinal
 		csvOut.write(outFileName);
 	}
 
+	public void finish (String outFileName) throws IOException
+	{
+		finalCsv.write(outFileName);
+	}
+	
 	public static void main(String[] args) throws Exception
 	{
 		CalculateFinal calculator = new CalculateFinal();
