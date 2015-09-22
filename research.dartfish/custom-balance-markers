@@ -2,9 +2,13 @@ set -x
 # tee makes it so the output goes to both the file and the screen
 findMarkers='java -cp bin:libs/commons-csv-1.1/commons-csv-1.1.jar:libs/vecmath.jar research.balance.FindOneMarkers'
 
+
+$findMarkers in=data/converted/BL/Pre/SEBTt_M3.tsv init=switchFeet
+$findMarkers in=data/converted/BL/Pre/SEBTt_LL1.tsv init=switchFeet
 $findMarkers in=data/converted/AP/Post/SEBTD_M3.tsv init=switchLeftAnkleToe
 $findMarkers in=data/converted/BL/Pre/SEBT_LL2.tsv init=switchFeet
 $findMarkers in=data/converted/AP/Post/SEBTT_NM1.tsv init=switchFeet
+
 
 ####
 # valid initialization flags

@@ -94,24 +94,32 @@ public class Csv
 					}
 					else
 					{
-						double value = Double.parseDouble(s);
+						try
+						{
+						
+							double value = Double.parseDouble(s);
 
-						if (f.subscript != null)
-						{
-							if (row.get(f.name) == null)
-								row.put(f.name, new Vector3());
-							
-							Vector3 v = (Vector3)row.get(f.name);
-							if (f.subscript.equals("X"))
-								v.x = value;
-							if (f.subscript.equals("Y"))
-								v.y = value;
-							if (f.subscript.equals("Z"))
-								v.z = value;
+							if (f.subscript != null)
+							{
+								if (row.get(f.name) == null)
+									row.put(f.name, new Vector3());
+								
+								Vector3 v = (Vector3)row.get(f.name);
+								if (f.subscript.equals("X"))
+									v.x = value;
+								if (f.subscript.equals("Y"))
+									v.y = value;
+								if (f.subscript.equals("Z"))
+									v.z = value;
+							}
+							else
+							{
+								row.put(f.name, value);
+							}
 						}
-						else
+						catch (NumberFormatException e)
 						{
-							row.put(f.name, value);
+							// skip
 						}
 					}
 				}

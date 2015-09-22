@@ -699,7 +699,10 @@ public class CompuSkel
 			for (Entry<String, Output> e : row.entrySet())
 			{
 				if (allNonNull(e.getValue().position))
+				{
 					output.put(e.getKey(), e.getValue().position);
+					output.put(e.getKey()+"+source", e.getValue().label);
+				}
 			}
 			
 			outCsv.addRow(output, inCsv.rows.get(j));
