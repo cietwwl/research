@@ -4,6 +4,7 @@ findMarkers='java -cp bin:libs/commons-csv-1.1/commons-csv-1.1.jar:libs/vecmath.
 
 $findMarkers in=data/converted/AP/Post/SEBTD_M3.tsv init=switchLeftAnkleToe
 $findMarkers in=data/converted/BL/Pre/SEBT_LL2.tsv init=switchFeet
+$findMarkers in=data/converted/AP/Post/SEBTT_NM1.tsv init=switchFeet
 
 ####
 # valid initialization flags

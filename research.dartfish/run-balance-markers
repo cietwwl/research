@@ -4,3 +4,4 @@ rm -f data/*.log
 java -cp bin:libs/commons-csv-1.1/commons-csv-1.1.jar:libs/vecmath.jar research.balance.ConvertAllC3dFiles 2>&1 | tee -a data/run-convert.log
 java -cp bin:libs/commons-csv-1.1/commons-csv-1.1.jar:libs/vecmath.jar research.balance.FindAllMarkers 2>&1 | tee -a data/run-markers.log
 
+./custom-balance-markers
