@@ -28,16 +28,30 @@ public class Csv
 	
 	public static class Field {
 		public int inIndex;
-		public String prefix;
-		public String name;
-		public String subscript;
+		public String prefix = null;
+		public String name = null;
+		public String subscript = null;
 		
 		public Field(String fieldName, int inIndex)
 		{
 			String[] p = fieldName.split(":");
-			prefix = p[0];
-			name = p[1];
-			subscript = p.length > 2 ? p[2] : null;
+			boolean hasSubscript = p.length > 1 && p[p.length-1].length() == 1;
+			
+			if (hasSubscript)
+			{
+				if (p.length > 2)
+					prefix = p[p.length-3];
+				name = p[p.length-2];
+			}
+			else
+			{
+				if (p.length > 1)
+					prefix = p[p.length-2];
+				name = p[p.length-1];
+			}
+			
+			if (hasSubscript)
+				subscript = p[p.length-1];
 
 			this.inIndex = inIndex;
 		}
@@ -120,7 +134,7 @@ public class Csv
 		{
 			columns.put(
 				name, 
-				clazz == Vector3.class ? 
+				Vector3.class.isAssignableFrom(clazz) ? 
 					ColumnType.Vector : 
 					ColumnType.Stringable
 			);
@@ -231,7 +245,7 @@ public class Csv
 						Vector3 v = (Vector3)o;
 						r.add(v.x);
 						r.add(v.y);
-						r.add(v.x);
+						r.add(v.z);
 					}
 					
 				}

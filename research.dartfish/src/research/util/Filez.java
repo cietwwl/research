@@ -13,6 +13,9 @@ public class Filez
 		String extensionLower = extension.toLowerCase();
 		List<String> result = new ArrayList<String>();
 		File[] files = new File(path).listFiles();
+		if (files == null)
+			return result;
+		
 		for (File f : files)
 		{
 			String fileName = Filez.getFileNamePart(f.getAbsolutePath());

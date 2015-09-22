@@ -1,0 +1,11 @@
+#!/bin/bash
+
+file=$1
+rate=$2
+
+
+if [[ "$rate" == "" ]]; then rate=1.0; fi;
+
+echo view skeleton file=$file rate=$rate
+java -cp bin:libs/commons-csv-1.1/commons-csv-1.1.jar:libs/vecmath.jar research.balance.SkeletonCsvViewer $file $rate
+

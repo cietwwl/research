@@ -6,13 +6,20 @@ import research.util.Pair;
 
 public class All<T extends Comparable<?>> implements Finder<T> 
 {
+	CompareValue<T> include;
 	Comparator<T> c;
 	T max = null;
 	int i = -1;
 	
 	public All(Comparator<T> c)
 	{
+		this(c, null);
+	}
+
+	public All(Comparator<T> c, CompareValue<T> include)
+	{
 		this.c = c;
+		this.include = include;
 	}
 	
 	@Override
@@ -20,10 +27,13 @@ public class All<T extends Comparable<?>> implements Finder<T>
 	{
 		if (o != null)
 		{
-			if (max == null || (c.compare(o, max) > 0))
+			if (include == null || include.process(o))
 			{
-				max = o;
-				i = index;
+				if (max == null || (c.compare(o, max) > 0))
+				{
+					max = o;
+					i = index;
+				}
 			}
 		}
 		

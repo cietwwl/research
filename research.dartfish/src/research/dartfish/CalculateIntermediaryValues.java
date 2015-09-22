@@ -39,16 +39,13 @@ public class CalculateIntermediaryValues
 				Vector3 elbow = csvIn.get(row, "elb");
 				Vector3 wrist = csvIn.get(row, "wr");
 				Vector3 trocanter = csvIn.get(row, "troc");
-				
 				double time = csvIn.get(row, "time");
 				
-		        Pair<Double, Vector3> elbowAngleDegreesXYZ = Vectors.findAngleAndAxisBetweenLimbsOfThreeJoints(shoulder, elbow, wrist);
-		        Pair<Double, Vector3> shoulderAngleDegreesXYZ = Vectors.findAngleAndAxisBetweenLimbsOfThreeJoints(trocanter, shoulder, elbow);
-		        
-				Vectors.multiply(Vector3.UnitX_Z, shoulder, elbow, wrist, trocanter);
+//				Vectors.multiply(Vector3.UnitX_Z, shoulder, elbow, wrist, trocanter);
+				
 		        Pair<Double, Vector3> elbowAngleDegrees = Vectors.findAngleAndAxisBetweenLimbsOfThreeJoints(shoulder, elbow, wrist);
-
 		        Pair<Double, Vector3> shoulderAngleDegrees = Vectors.findAngleAndAxisBetweenLimbsOfThreeJoints(trocanter, shoulder, elbow);
+
 		        shoulderAngleDegrees.first *= Vectors.unitOnAxis(shoulderAngleDegrees.second, Vector3.UnitNegY);
 
 		        Vector3 velocity = null;
@@ -60,7 +57,7 @@ public class CalculateIntermediaryValues
 					Vector3 prevWrist = csvIn.get(prevRow, "wr");
 					double prevTime = csvIn.get(prevRow, "time");
 					
-					Vectors.multiply(Vector3.UnitX_Z, prevWrist);
+//					Vectors.multiply(Vector3.UnitX_Z, prevWrist);
 					
 					double dt = time - prevTime;
 					velocity = wrist.subtract(prevWrist).divide(dt);
@@ -70,14 +67,61 @@ public class CalculateIntermediaryValues
 		        upperBody = new Object[] {
 		        	"elbowAngle", elbowAngleDegrees.first, 
 		        	"shoulderAngle", shoulderAngleDegrees.first,
-		        	"elbowAngleXYZ", elbowAngleDegreesXYZ.first, 
-		        	"shoulderAngleXYZ", shoulderAngleDegreesXYZ.first,
 		        	"wristVelocity", velocity,
 		        	"wristSpeed", speed
 		        };
 			}
 			
-	        csvOut.addRow(
+			if (Collectionz.mapContainsAll(row, "c7", "sac", "troc", "knee", "ank", "heel", "toe", "time"))
+			{
+				Vector3 c7 = csvIn.get(row, "c7");
+				Vector3 sacrum = csvIn.get(row, "sac");
+				Vector3 trocanter = csvIn.get(row, "troc");
+				Vector3 knee = csvIn.get(row, "knee");
+				Vector3 ankle = csvIn.get(row, "ank");
+				Vector3 heel = csvIn.get(row, "heel");
+				Vector3 toe = csvIn.get(row, "toe");
+				double time = csvIn.get(row, "time");
+				
+//				Vectors.multiply(Vector3.UnitX_Z, c7, sacrum, trocanter, knee, ankle, heel, toe);
+				
+				Vector3 distanceTrocanterToSacrum = trocanter.subtract(sacrum);
+				
+		        Pair<Double, Vector3> hipAngleDegrees = Vectors.findAngleAndAxisBetweenTwoLimbsOfFourJoints(c7, sacrum, trocanter, knee);
+		        Pair<Double, Vector3> kneeAngleDegrees = Vectors.findAngleAndAxisBetweenLimbsOfThreeJoints(trocanter, knee, ankle);
+		        Pair<Double, Vector3> footAngleDegrees = Vectors.findAngleAndAxisBetweenTwoLimbsOfFourJoints(knee, ankle, heel, toe);
+		        
+		        hipAngleDegrees.first *= Vectors.unitOnAxis(hipAngleDegrees.second, Vector3.UnitNegY);
+		        kneeAngleDegrees.first *= Vectors.unitOnAxis(kneeAngleDegrees.second, Vector3.UnitNegY);
+		        footAngleDegrees.first *= Vectors.unitOnAxis(footAngleDegrees.second, Vector3.UnitNegY);
+
+		        Vector3 velocity = null;
+		        Double speed = null;
+		        
+		        Map<String, Object> prevRow = csvIn.getRow(i-1);
+		        if (Collectionz.mapContainsAll(prevRow, "heel", "time"))
+		        {
+					Vector3 prevHeel = csvIn.get(prevRow, "heel");
+					double prevTime = csvIn.get(prevRow, "time");
+					
+//					Vectors.multiply(Vector3.UnitX_Z, prevHeel);
+					
+					double dt = time - prevTime;
+					velocity = heel.subtract(prevHeel).divide(dt);
+					speed = velocity.length();
+		        }
+		        
+		        lowerBody = new Object[] {
+		        	"_hipAngle", hipAngleDegrees.first, 
+		        	"_kneeAngle", kneeAngleDegrees.first,
+		        	"_footAngle", footAngleDegrees.first,
+		        	"_distanceTrocanterToSacrum", distanceTrocanterToSacrum.length(),
+		        	"_heelVelocity", velocity,
+		        	"_heelSpeed", speed
+		        };
+			}
+
+			csvOut.addRow(
 	        	csvIn.getRow(i),
 	        	upperBody,
 	        	lowerBody

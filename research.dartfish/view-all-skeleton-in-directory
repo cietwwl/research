@@ -1,0 +1,5 @@
+set -x
+rate=$2
+if [[ "$rate" == "" ]]; then rate=1.0; fi;
+find $1 -type f -name "*.tsv" -exec ./view-skeleton {} $rate \;
+

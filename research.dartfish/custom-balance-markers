@@ -1,0 +1,14 @@
+set -x
+# tee makes it so the output goes to both the file and the screen
+findMarkers='java -cp bin:libs/commons-csv-1.1/commons-csv-1.1.jar:libs/vecmath.jar research.balance.FindOneMarkers'
+
+$findMarkers in=data/converted/BL/Pre/SEBT_LL2.tsv init=switchFeet
+
+####
+# valid initialization flags
+#
+#init=switchFeet
+#init=switchLeftAnkleToe
+#init=switchRightAnkleToe
+#init=windowSize:1000 (or any number)
+

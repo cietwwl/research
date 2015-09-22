@@ -33,7 +33,7 @@ public class Vectors
 	
 	public static double findAngleBetween(Vector3 u, Vector3 v)
 	{
-		return findAngleBetweenATAN2(u,v);
+		return findAngleBetweenACOS(u,v);
 	}
 	
 	public static double findAngleBetweenLimbsOfThreeJoints (Vector3 a, Vector3 b, Vector3 c)
@@ -46,6 +46,17 @@ public class Vectors
 	    return angleDegrees;
 	}
 	
+	public static double findAngleBetweenTwoLimbsOfFourJoints(
+			Vector3 a, Vector3 b, Vector3 c, Vector3 d)
+	{
+	    Vector3 limb1 = d.subtract(c);
+	    Vector3 limb2 = a.subtract(b);
+	    
+	    double angle = findAngleBetween(limb1,limb2);
+	    double angleDegrees = Math.toDegrees(angle);
+	    return angleDegrees;
+	}
+
 	public static Pair<Double, Vector3> findAngleAndAxisBetweenLimbsOfThreeJoints (Vector3 a, Vector3 b, Vector3 c)
 	{
 	    Vector3 limb1 = c.subtract(b);
@@ -54,6 +65,15 @@ public class Vectors
 	    return Pair.create(Math.toDegrees(findAngleBetween(limb1,limb2)), findAxisBetween(limb1, limb2));
 	}
 	
+
+	public static Pair<Double, Vector3> findAngleAndAxisBetweenTwoLimbsOfFourJoints (Vector3 a, Vector3 b, Vector3 c, Vector3 d)
+	{
+	    Vector3 limb1 = d.subtract(c);
+	    Vector3 limb2 = a.subtract(b);
+
+	    return Pair.create(Math.toDegrees(findAngleBetween(limb1,limb2)), findAxisBetween(limb1, limb2));
+	}
+
 	static public void multiply(Vector3 m, Vector3...vs)
 	{
 		for (Vector3 v : vs)

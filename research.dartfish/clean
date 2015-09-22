@@ -1,4 +1,4 @@
 rm -rf data/converted
 rm -rf data/processed
 rm -rf data/final
-rm data/run.log
+rm data/*.log

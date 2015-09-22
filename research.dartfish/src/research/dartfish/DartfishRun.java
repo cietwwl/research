@@ -89,7 +89,7 @@ public class DartfishRun
 	
 	static public void main(String[] args) throws Exception
 	{
-		convertC3d();
+//		convertC3d();
 		calculateIntermediaryValues();
 		calculateFinal();
 	}
