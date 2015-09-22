@@ -598,7 +598,7 @@ public class CompuSkel
 	{
 		for (String s : initializationFlags)
 		{
-			fileLog.println("initialization", S.switchFeet);
+			fileLog.println("initialization", s);
 			switch (s)
 			{
 				case S.switchFeet:
