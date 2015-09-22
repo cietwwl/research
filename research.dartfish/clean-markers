@@ -1,0 +1,2 @@
+rm -rf data/markers
+rm data/*.log

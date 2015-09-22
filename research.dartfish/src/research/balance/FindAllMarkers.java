@@ -21,7 +21,7 @@ public class FindAllMarkers
 					"tsv"
 				).replace(" ", "_");
 			
-			log.println("Converting " + inFile + " -> " + outFile);
+			log.println("Processing " + inFile + " -> " + outFile);
 			Filez.ensureDirectory(Filez.getDirectoryPart(outFile));
 			try
 			{
