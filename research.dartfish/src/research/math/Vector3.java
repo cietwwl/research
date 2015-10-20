@@ -17,6 +17,18 @@ public class Vector3 extends Vector3d implements Comparable<Vector3>
 		// TODO Auto-generated constructor stub
 	}
 
+	public double get (int i)
+	{
+		if (i == 0)
+			return x;
+		if (i == 1)
+			return y;
+		if (i == 2)
+			return z;
+		
+		throw new RuntimeException("Unknown index");
+	}
+	
 	public Vector3(double arg0, double arg1, double arg2)
 	{
 		super(arg0, arg1, arg2);

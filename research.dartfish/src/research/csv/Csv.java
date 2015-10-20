@@ -61,7 +61,7 @@ public class Csv
 	public Map<String, ColumnType > columns = new HashMap<String, ColumnType >();
 	public Vector< Map<String, Object> > rows = new Vector < Map<String, Object> >();
 	
-	protected Csv (String inFileName) throws IOException
+	protected Csv (String inFileName, int skipRows, int skipColumns) throws IOException
 	{
 		CSVParser parser = CSVFormat.TDF.parse(new FileReader(inFileName));
 		
@@ -69,9 +69,15 @@ public class Csv
 		
 		for (CSVRecord csvRecord : parser) 
 		{
+			if (skipRows > 0)
+			{
+				skipRows--;
+				continue;
+			}
+			
 			if (fields.isEmpty())
 			{
-				for (int i=0; i<csvRecord.size(); ++i)
+				for (int i=skipColumns; i<csvRecord.size(); ++i)
 				{
 					Field f = new Field(csvRecord.get(i), i);
 					if (f.prefix != null)
