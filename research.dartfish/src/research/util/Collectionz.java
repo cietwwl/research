@@ -30,4 +30,15 @@ public class Collectionz
 		
 		return true;
 	}
+	
+	public static boolean allNotNull(Object...a)
+	{
+		for (Object o : a)
+		{
+			if (o == null)
+				return false;
+		}
+		
+		return true;
+	}
 }

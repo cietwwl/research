@@ -43,6 +43,7 @@ public class FindOneMarkers
 				
 				case "out":
 					outputFile = arg[1];
+				break;
 				
 				case "init":
 					initializationArgs.add(arg[1]);
