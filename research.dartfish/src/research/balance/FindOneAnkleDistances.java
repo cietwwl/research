@@ -1,8 +1,16 @@
 package research.balance;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.commons.math3.analysis.interpolation.LoessInterpolator;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import research.csv.CsvIn;
 import research.csv.CsvOut;
@@ -27,6 +35,49 @@ public class FindOneAnkleDistances
 		Double a;
 		Double sa;
 		Integer direction;
+	}
+	
+	static void makeChart (ArrayList<Comp> comps, String outFileName) throws IOException
+	{
+		final XYSeries distance = new XYSeries("Distance");
+		final XYSeries average = new XYSeries("Average");
+		final XYSeries peak = new XYSeries("Peak");
+		final XYSeries loes = new XYSeries("Loes");
+		final XYSeries test = new XYSeries("Test");
+		for (Comp c: comps)
+		{
+			if (c.d == null)
+				continue;
+
+			double f = c.frame;
+			
+			distance.add(f, c.d);
+			average.add(f, c.a);
+			if (c.p != null)
+				peak.add(f, c.p);
+			loes.add(f, c.s);
+			test.add(f, c.sa);
+		}
+		
+		final XYSeriesCollection dataset = new XYSeriesCollection();
+		dataset.addSeries(distance);
+		dataset.addSeries(average);
+		dataset.addSeries(peak);
+		dataset.addSeries(loes);
+		dataset.addSeries(test);
+		
+		final JFreeChart chart = ChartFactory.createXYLineChart(
+	            outFileName,      // chart title
+	            "X",                      // x axis label
+	            "Y",                      // y axis label
+	            dataset,                  // data
+	            PlotOrientation.VERTICAL,
+	            true,                     // include legend
+	            true,                     // tooltips
+	            false                     // urls
+	        );		
+		
+		ChartUtilities.saveChartAsPNG(new File(outFileName), chart, 640, 480);
 	}
 	
 	static boolean test(int direction, double l, double r)
@@ -185,6 +236,8 @@ public class FindOneAnkleDistances
 		maxPeaksOut.write(maxPeakFileName);
 		peaksOut.write(peakOutFileName);
 		csvOut.write(outFileName);
+		
+		makeChart(comps, outFileName + ".png");
 	}
 
 	static public void main (String[] args) throws Exception
