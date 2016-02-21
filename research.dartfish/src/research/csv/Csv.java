@@ -228,7 +228,12 @@ public class Csv
 	
 	public void write (String outFileName) throws IOException
 	{
-		FileWriter out = new FileWriter(outFileName);
+		write (outFileName, false);
+	}
+	
+	public void write (String outFileName, boolean append) throws IOException
+	{
+		FileWriter out = new FileWriter(outFileName, append);
 		String[] allColumns = getExplodedColumns();
 		
 		Map<String,Integer> columnIndexes = new HashMap<String, Integer>();
@@ -285,6 +290,7 @@ public class Csv
 		csvPrinter.close();
 		out.close();
 	}
+	
 	
 	public String fullKeyValue(String key)
 	{

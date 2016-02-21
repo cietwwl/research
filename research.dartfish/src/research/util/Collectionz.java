@@ -20,6 +20,20 @@ public class Collectionz
 		return true;
 	}
 
+	public static boolean mapContainsAllAndNotNull(Map<?, ?> map, String... keys)
+	{
+		if (map == null)
+			return false;
+		
+		for (String key : keys)
+		{
+			if (!map.containsKey(key) || map.get(key) == null)
+				return false;
+		}
+		
+		return true;
+	}
+
 	public static boolean setContainsAll(Set<?> set, String... keys)
 	{
 		for (String key : keys)

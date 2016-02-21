@@ -30,6 +30,14 @@ public class S
 		PrightAnkle = "p_rightAnkle",
 		PrightToe = "p_rightToe";
 
+	static String[] 
+		toe = { S.leftToe, S.rightToe },
+		ankle = { S.leftAnkle, S.rightAnkle },
+		knee = { S.leftKnee, S.rightKnee },
+		hip = { S.leftHip, S.rightHip };
+	
+	static final int left = 0, right = 1;
+		
 	static final String
 		time = "time";
 	
