@@ -35,6 +35,8 @@ public class S
 		ankle = { S.leftAnkle, S.rightAnkle },
 		knee = { S.leftKnee, S.rightKnee },
 		hip = { S.leftHip, S.rightHip };
+
+	public static String synthPoint = "synthPoint";
 	
 	static final int left = 0, right = 1;
 		
@@ -42,6 +44,10 @@ public class S
 		time = "time";
 	
 	public static final String
+		ignore="ignore",
+		centerNeck = "centerNeck",
+		forceInitialization = "force",
+		hintPoint="hint",
 		switchFeet = "switchFeet",
 		switchLeftAnkleToe = "switchLeftAnkleToe",
 		switchRightAnkleToe = "switchRightAnkleToe",

@@ -1,6 +1,7 @@
 package research.util;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,5 +55,15 @@ public class Collectionz
 		}
 		
 		return true;
+	}
+	
+	public static Map toMap(Object... a)
+	{
+		Map m = new HashMap();
+		for (int i=0; i<a.length; i+=2)
+		{
+			m.put(a[i], a[i+1]);
+		}
+		return m;
 	}
 }

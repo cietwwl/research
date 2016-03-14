@@ -1,7 +1,6 @@
 # tee makes it so the output goes to both the file and the screen
 
-rm -f data/*.log
-java -cp bin:libs/commons-csv-1.1/commons-csv-1.1.jar:libs/vecmath.jar research.balance.ConvertAllC3dFiles 2>&1 | tee -a data/run-convert.log
+rm -f data/run-markers.log
 java -cp bin:libs/commons-csv-1.1/commons-csv-1.1.jar:libs/vecmath.jar research.balance.FindAllMarkers 2>&1 | tee -a data/run-markers.log
 
 ./custom-balance-markers

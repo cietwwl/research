@@ -3,10 +3,12 @@ package research.balance;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.math3.analysis.interpolation.LoessInterpolator;
+import org.apache.commons.math3.geometry.partitioning.utilities.AVLTree;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -25,10 +27,59 @@ import research.util.Collectionz;
 import research.util.Filez;
 import research.util.LogOut;
 import research.util.Pair;
+import research.util.RegE;
 
 public class FindStandingLegAnglePeaks
 {
 	static LogOut log = new LogOut(FindStandingLegAnglePeaks.class);
+	
+	
+	static Map<String,Integer> fixes = Collectionz.toMap(
+			/*
+			"BL_PRE_DD_LL1_ANKLE", -1,
+			"CS_PRE_DD_LL3_KNEE", -1,
+			"EB_POST_DD_LL2_ANKLE", -1,
+			"EB_POST_DD_LL2_KNEE", -1,
+			"EB_PRE_DD_LL3_ANKLE", -1,
+			"EB_PRE_DD_LL3_KNEE", -1,
+			"HR_PRE_DD_LL1_ANKLE", -1,
+			"JB_PRE_DD_LL2_ANKLE", -2,
+			"JB_PRE_DD_LL2_KNEE", -3,
+			"JB_PRE_DD_LL3_ANKLE", -1,
+			"JTB_POST_DD_NM2_KNEE", -1,
+			"LK_PRE_DD_NM1_ANKLE", -1,
+			"LK_PRE_DD_M2_ANKLE", -1,
+			"LS_POST_DD_LL1_ANKLE", -1,
+			"MG_POST_DD_LL1_ANKLE", -1,
+			"MG_POST_DD_LL3_ANKLE", -1,
+			"MG_POST_DD_LL3_KNEE", -1,
+			"MG_PRE_DD_LL1_ANKLE", -1,
+			"SK_POST_DD_LL1_ANKLE", -1,
+			"SD_POST_DD_LL3_ANKLE", -1,
+			"SK_POST_DD_LL3_KNEE", -1,
+			
+			"SG_POST_DD_LL1_ANKLE", -2,
+			"SG_POST_DD_LL2_ANKLE", -2,
+			"SG_POST_DD_LL3_ANKLE", -2,
+			"SG_POST_DD_NM1_ANKLE", -2,
+			"SG_POST_DD_NM2_ANKLE", -2,
+			"SG_POST_DD_NM3_ANKLE", -2,
+			"SG_POST_DD_M1_ANKLE", -2,
+			"SG_POST_DD_M2_ANKLE", -2,
+			"SG_POST_DD_M3_ANKLE", -2,
+
+			"SG_PRE_DD_LL1_ANKLE", -2,
+			"SG_PRE_DD_LL2_ANKLE", -2,
+			"SG_PRE_DD_LL3_ANKLE", -2,
+			"SG_PRE_DD_NM1_ANKLE", -2,
+			"SG_PRE_DD_NM2_ANKLE", -2,
+			"SG_PRE_DD_NM3_ANKLE", -2,
+			"SG_PRE_DD_M1_ANKLE", -2,
+			"SG_PRE_DD_M2_ANKLE", -2,
+			"SG_PRE_DD_M3_ANKLE", -2
+			*/
+		);
+		
 	
 	static public class Comp
 	{
@@ -36,8 +87,8 @@ public class FindStandingLegAnglePeaks
 		public Double sacrum;
 		public Double sacrumBW;
 		public Double sacrumSmooth, sacrumAverage, sacrumTest;
-		public double[] ankleAngles = { 0,0 };
-		public double[] kneeAngles = { 0,0 };
+		public Double[] ankleAngles = { null,null };
+		public Double[] kneeAngles = { null,null };
 		
 		public Double ankleAngleLeft;
 		public Double ankleAngleLeftBW;
@@ -257,22 +308,37 @@ public class FindStandingLegAnglePeaks
 		Maths.smooth(comps, "sacrum", "sacrumSmooth", "sacrumAverage", "sacrumTest", bandwidth, cycles);
 		List<Pair<Integer, Comp>> sacrumPeaks = Maths.findPeaks(comps, new Maths.PeakFinderDoubleReflection<Comp>("sacrum", "sacrumTest")); 
 
+		double kneeAngleLeftAverage = Maths.average(comps, "kneeAngleLeft");
+		double kneeAngleLeftStdDev = Maths.stddev(comps, "kneeAngleLeft");
+		Double kneeAngleLeftMax = Maths.max(comps, "kneeAngleLeft");
 		Maths.butterworth(comps, "kneeAngleLeft", "kneeAngleLeftBW", filterOrder, fcf1);
 		Maths.smooth(comps, "kneeAngleLeft", "kneeAngleLeftSmooth", "kneeAngleLeftAverage", "kneeAngleLeftTest", bandwidth, cycles);
 		List<Pair<Integer, Comp>> kneeAngleLeftPeaks = Maths.findPeaks(comps, new Maths.PeakFinderDoubleReflection<Comp>("kneeAngleLeftBW", "kneeAngleLeftTest")); 
 
+		double kneeAngleRightAverage = Maths.average(comps, "kneeAngleRight");
+		double kneeAngleRightStdDev = Maths.stddev(comps, "kneeAngleRight");
+		Double kneeAngleRightMax = Maths.max(comps, "kneeAngleRight");
 		Maths.butterworth(comps, "kneeAngleRight", "kneeAngleRightBW", filterOrder, fcf1);
 		Maths.smooth(comps, "kneeAngleRight", "kneeAngleRightSmooth", "kneeAngleRightAverage", "kneeAngleRightTest", bandwidth, cycles);
 		List<Pair<Integer, Comp>> kneeAngleRightPeaks = Maths.findPeaks(comps, new Maths.PeakFinderDoubleReflection<Comp>("kneeAngleRightBW", "kneeAngleRightTest")); 
 		
+		double ankleAngleLeftAverage = Maths.average(comps, "ankleAngleLeft");
+		double ankleAngleLeftStdDev = Maths.stddev(comps, "ankleAngleLeft");
+		Double ankleAngleLeftMax = Maths.max(comps, "ankleAngleLeft");
 		Maths.butterworth(comps, "ankleAngleLeft", "ankleAngleLeftBW", filterOrder, fcf1);
 		Maths.smooth(comps, "ankleAngleLeft", "ankleAngleLeftSmooth", "ankleAngleLeftAverage", "ankleAngleLeftTest", bandwidth, cycles);
 		List<Pair<Integer, Comp>> ankleAngleLeftPeaks = Maths.findPeaks(comps, new Maths.PeakFinderDoubleReflection<Comp>("ankleAngleLeftBW", "ankleAngleLeftTest")); 
 		
+		double ankleAngleRightAverage = Maths.average(comps, "ankleAngleRight");
+		double ankleAngleRightStdDev = Maths.stddev(comps, "ankleAngleRight");
+		Double ankleAngleRightMax = Maths.max(comps, "ankleAngleRight");
 		Maths.butterworth(comps, "ankleAngleRight", "ankleAngleRightBW", filterOrder, fcf1);
 		Maths.smooth(comps, "ankleAngleRight", "ankleAngleRightSmooth", "ankleAngleRightAverage", "ankleAngleRightTest", bandwidth, cycles);
 		List<Pair<Integer, Comp>> ankleAngleRightPeaks = Maths.findPeaks(comps, new Maths.PeakFinderDoubleReflection<Comp>("ankleAngleRightBW", "ankleAngleRightTest")); 
 
+		double pelvicAngleAverage = Maths.average(comps, "pelvicAngle");
+		double pelvicAngleStdDev = Maths.stddev(comps, "pelvicAngle");
+		Double pelvicAngleMax = Maths.max(comps, "pelvicAngle");
 		Maths.butterworth(comps, "pelvicAngle", "pelvicAngleBW", filterOrder, fcf1);
 		Maths.smooth(comps, "pelvicAngle", "pelvicAngleSmooth", "pelvicAngleAverage", "pelvicAngleTest", bandwidth, cycles);
 		List<Pair<Integer, Comp>> pelvicAnglePeaks = Maths.findPeaks(comps, new Maths.PeakFinderDoubleReflection<Comp>("pelvicAngleBW", "pelvicAngleTest")); 
@@ -283,6 +349,7 @@ public class FindStandingLegAnglePeaks
 		CsvOut kneeAngleRightPeaksOut = new CsvOut();
 		CsvOut ankleAngleLeftPeaksOut = new CsvOut();
 		CsvOut ankleAngleRightPeaksOut = new CsvOut();
+		CsvOut characteristicsPeaksOut = new CsvOut();
 		csvOut.prefix = csvIn.prefix;
 
 		for (Comp c : comps)
@@ -348,6 +415,141 @@ public class FindStandingLegAnglePeaks
 		}
 		ankleAngleRightPeaksOut.write(peakOutFileName, true);
 
+		characteristicsPeaksOut.addRow(
+			"ankleAngleRightAverage", ankleAngleRightAverage, 
+			"ankleAngleRightStdDev", ankleAngleRightStdDev, 
+			"ankleAngleRightMax", ankleAngleRightMax,
+			"kneeAngleRightAverage", kneeAngleRightAverage, 
+			"kneeAngleRightStdDev", kneeAngleRightStdDev, 
+			"kneeAngleRightMax", kneeAngleRightMax,
+			"pelvicAngleAverage", pelvicAngleAverage,
+			"pelvicAngleStdDev", pelvicAngleStdDev,
+			"pelvicAngleMax", pelvicAngleMax
+		);
+		characteristicsPeaksOut.write(peakOutFileName, true);
+		
+		characteristicsPeaksOut = new CsvOut();
+		characteristicsPeaksOut.addRow(
+			"ankleAngleLeftAverage", ankleAngleLeftAverage, 
+			"ankleAngleLeftStdDev", ankleAngleLeftStdDev, 
+			"ankleAngleLeftMax", ankleAngleLeftMax,
+			"kneeAngleLeftAverage", kneeAngleLeftAverage, 
+			"kneeAngleLeftStdDev", kneeAngleLeftStdDev, 
+			"kneeAngleLeftMax", kneeAngleLeftMax
+		);
+		
+		characteristicsPeaksOut.write(peakOutFileName, true);
+		
+		// MaxKnee1	MaxKnee2	MaxKnee3	AvgKnee	MaxAnk1	MaxAnk2	MaxAnk3	AvgAnk	PelAvg	PelMax	PelSD
+		Map<String,Double> finalData = new HashMap<String,Double>();
+
+		boolean reversedSubject = false;
+		String[] reversed = { "ap", "gs" };
+		for (String r : reversed)
+		{
+			if (inFileName.toLowerCase().contains("/"+r+"/"))
+				reversedSubject = true;
+		}
+		
+		List<Pair<Integer, Comp>> anklePeaks = reversedSubject ? ankleAngleRightPeaks : ankleAngleLeftPeaks;
+		List<Pair<Integer, Comp>> kneePeaks = reversedSubject ? kneeAngleRightPeaks : kneeAngleLeftPeaks;
+		String ankleField = reversedSubject ? "ankleAngleRight" : "ankleAngleLeft";
+		String kneeField = reversedSubject ? "kneeAngleRight" : "kneeAngleLeft";
+		
+		String[] m = RegE.match(inFileName, ".*/(.+?)/(.+?)/(.+?)_(.+?)\\.tsv");
+		String key = 
+			m[0].toUpperCase() + "_" +
+			m[1].toUpperCase() + "_" +
+			m[2].toUpperCase() + "_" +
+			m[3].toUpperCase() + "_";
+		
+		{
+			int ankleCorrect = fixes.getOrDefault(key+"ANKLE",0);
+			int kneeCorrect = fixes.getOrDefault(key+"KNEE",0);
+			
+			if (ankleCorrect != 0 || kneeCorrect != 0)
+				log.println("ankleCorrect", ankleCorrect, "kneeCorrect", kneeCorrect);
+			
+			double sumAnk=0, countAnk=0;
+			double sumKnee = 0, countKnee = 0;
+			for (int i=anklePeaks.size()-2, max=3-ankleCorrect; i>=0 && max>0; --i)
+			{
+				Pair<Integer, Comp> peak = anklePeaks.get(i);
+				if (peak.first > 0)		
+				{
+					if (max <= 3)
+					{
+						double v = (Double)Maths.getMemberField(peak.second, ankleField);
+						finalData.put("MaxAnk"+max, v);
+						finalData.put("MaxAnkFrame"+max, (double)peak.second.frame);
+						sumAnk += v;
+						countAnk += 1.0;
+					}
+					max--;
+				}
+			}
+
+			for (int i=kneePeaks.size()-2, max=3-kneeCorrect; i>=0 && max>0; --i)
+			{
+				Pair<Integer, Comp> peak = kneePeaks.get(i);
+				if (peak.first > 0)				
+				{
+					if (max <= 3)
+					{
+						double v = (Double)Maths.getMemberField(peak.second, kneeField);
+						finalData.put("MaxKnee"+max, v);
+						finalData.put("MaxKneeFrame"+max, (double)peak.second.frame);
+						sumKnee += v;
+						countKnee += 1.0;
+					}
+					max--;
+				}
+			}
+
+			double avgAnk = sumAnk/countAnk;
+			double avgKnee = sumKnee/countKnee;
+			
+			finalData.put("MaxAnkAvg", avgAnk);
+			finalData.put("MaxKneeAvg", avgKnee);
+		}
+		
+		finalData.put("PelAvg", pelvicAngleAverage);
+		finalData.put("PelMax", pelvicAngleMax);
+		finalData.put("PelStd", pelvicAngleStdDev);
+		
+		String[] keysOrder = { 
+			"MaxAnk1", "MaxAnk2", "MaxAnk3", "MaxAnkAvg",
+			"MaxKnee1", "MaxKnee2", "MaxKnee3", "MaxKneeAvg", 
+			"MaxAnkFrame1", "MaxAnkFrame2", "MaxAnkFrame3",
+			"MaxKneeFrame1", "MaxKneeFrame2", "MaxKneeFrame3",
+			"PelAvg", "PelMax", "PelStd",
+		};
+		
+		Object[] otherDatas = {
+			"TrialAvgAnk", reversedSubject ? ankleAngleRightAverage : ankleAngleLeftAverage,
+			"TrialMaxAnk", reversedSubject ? ankleAngleRightMax : ankleAngleLeftMax,
+			"TrialStdAnk", reversedSubject ? ankleAngleRightStdDev : ankleAngleLeftStdDev,
+			"TrialAvgKnee", reversedSubject ? kneeAngleRightAverage : kneeAngleLeftAverage,
+			"TrialMaxKnee", reversedSubject ? kneeAngleRightMax : kneeAngleLeftMax,
+			"TrialStdKnee", reversedSubject ? kneeAngleRightStdDev : kneeAngleLeftStdDev
+		} ;
+		
+		CsvOut finalPeaks = new CsvOut();
+		ArrayList<Object> row = new ArrayList<Object>();
+		for (String k : keysOrder)
+		{
+			row.add(k);
+			row.add(finalData.get(k));
+		}
+		
+		for (Object o : otherDatas)
+		{
+			row.add(o);
+		}
+		
+		finalPeaks.addRow(row.toArray());
+		finalPeaks.write(maxPeakFileName);
+		
 		makeChart(comps, outFileName + ".png");
 	}
 

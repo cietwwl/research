@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import research.csv.Csv.ColumnType;
 import research.csv.CsvIn;
 import research.csv.CsvOut;
 import research.csv.find.Compare;
@@ -594,6 +595,37 @@ public class CompuSkel
 		outCsv.write(outFile);
 	}
 	
+	public void preProcessInitialization ()
+	{
+		for (String s : initializationFlags)
+		{
+			if (s.startsWith(S.synthPoint))
+			{
+				String[] labelNamePoint = s.split(":");
+				String[] xyz = labelNamePoint[2].split(",");
+				Vector3 v = new Vector3(new Double(xyz[0]), new Double(xyz[1]), new Double(xyz[2]));
+				for (Map<String, Object> row : inCsv.rows)
+					row.put(labelNamePoint[1], v);
+
+				inCsv.columns.put(labelNamePoint[1], ColumnType.Vector);
+			}
+			if (s.startsWith(S.hintPoint))
+			{
+				
+			}
+			if (s.startsWith(S.ignore))
+			{
+				String[] labelNamePoint = s.split(":");
+				String[] points = labelNamePoint[1].split(",");
+				for (String p : points)
+				{
+					interference.add(p);
+					fileLog.println("ignoring point", p);
+				}
+			}
+		}
+	}
+	
 	public void postProcessInitialization (Map<String,String> init)
 	{
 		for (String s : initializationFlags)
@@ -633,8 +665,25 @@ public class CompuSkel
 				} break;
 				
 				default:
+				{
+					if (s.startsWith(S.forceInitialization))
+					{
+						String pairsString = s.split("-")[1];
+						String pairs[] = pairsString.split(",");
+						for (String pair : pairs)
+						{
+							String[] p = pair.split(":");
+							init.put(p[0], p[1]);
+							fileLog.println("forcing", p[0], "to", p[1]);
+						}
+					}
+					else
 					if (!s.startsWith(S.initializationWindowSize))
+					if (!s.startsWith(S.synthPoint))
+					if (!s.startsWith(S.centerNeck))
+					if (!s.startsWith(S.ignore))
 						fileLog.println("initialization argument not known!");
+				}
 			}
 		}
 	}
@@ -642,6 +691,7 @@ public class CompuSkel
 	public void run ()
 	{
 		setup();
+		preProcessInitialization();
 		
 		Map<String,String> initialization = null;
 		
@@ -732,6 +782,9 @@ public class CompuSkel
 		
 		// and there is this other point annoying the fuck out of me
 		if (v.x < -380 && v.y > 900 && v.z < 50)
+			return false;
+		
+		if (v.z < 0)
 			return false;
 		
 		return true;
@@ -844,6 +897,9 @@ public class CompuSkel
 		ArrayList<Vector3WithLabel> vectors = new ArrayList<Vector3WithLabel>();
 		for (String label : row.keySet())
 		{
+			if (interference.contains(label))
+				continue;
+
 			Object o = row.get(label);
 			if (!(o instanceof Vector3))
 				continue;
@@ -877,12 +933,21 @@ public class CompuSkel
 			List<Vector3WithLabel> feetLeft = feet.subList(2, 4);
 			feetRight.sort(new LessThanVector3(Vector3.UnitX));
 			feetLeft.sort(new LessThanVector3(Vector3.UnitX));
+			
+			Vector3WithLabel rShoulder = torso.get(0); 
+			Vector3WithLabel neck = torso.get(1); 
+			Vector3WithLabel lShoulder = torso.get(2); 
 
+			if (initializationFlags.contains(S.centerNeck))
+				if (rShoulder.add(lShoulder).divide(2.0).subtract(neck).length() > 40.0)
+					return null;
+			
 			Map<String, String> assign = new HashMap<String,String>();
 			
 			assign.put(S.rightShoulder, torso.get(0).label);
 			assign.put(S.neck, torso.get(1).label);
 			assign.put(S.leftShoulder, torso.get(2).label);
+			
 			assign.put(S.rightHip, pelvis.get(0).label);
 			assign.put(S.centerHip, pelvis.get(1).label);
 			assign.put(S.leftHip, pelvis.get(2).label);

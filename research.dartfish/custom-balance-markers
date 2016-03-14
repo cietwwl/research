@@ -9,6 +9,43 @@ $findMarkers in=data/converted/AP/Post/SEBTD_M3.tsv init=switchLeftAnkleToe
 $findMarkers in=data/converted/BL/Pre/SEBT_LL2.tsv init=switchFeet
 $findMarkers in=data/converted/AP/Post/SEBTT_NM1.tsv init=switchFeet
 
+$findMarkers in=data/converted/AP/Pre/DS_M3.tsv init=synthPoint:KNEE_L:300,349,1400
+
+$findMarkers in=data/converted/JB/Post/DD_LL1.tsv init=synthPoint:KNEE_R:250,270,450 init=synthPoint:TOE_R:250,400,25
+$findMarkers in=data/converted/JB/Post/DD_LL2.tsv init=synthPoint:KNEE_R:250,270,450 init=synthPoint:TOE_R:250,400,25
+$findMarkers in=data/converted/JB/Post/DD_LL3.tsv init=synthPoint:KNEE_R:250,270,450 init=synthPoint:TOE_R:250,400,25
+
+$findMarkers in=data/converted/JB/Post/DD_M1.tsv init=synthPoint:KNEE_R:250,270,450 init=synthPoint:TOE_R:250,400,25
+$findMarkers in=data/converted/JB/Post/DD_M2.tsv init=synthPoint:KNEE_R:250,270,450 init=synthPoint:TOE_R:250,400,25
+$findMarkers in=data/converted/JB/Post/DD_M3.tsv init=synthPoint:KNEE_R:250,270,450 init=synthPoint:TOE_R:250,400,25
+
+$findMarkers in=data/converted/JB/Post/DD_NM1.tsv init=synthPoint:KNEE_R:250,270,450 init=synthPoint:TOE_R:250,400,25
+$findMarkers in=data/converted/JB/Post/DD_NM2.tsv init=synthPoint:KNEE_R:250,270,450 init=synthPoint:TOE_R:250,400,25
+$findMarkers in=data/converted/JB/Post/DD_NM3.tsv init=synthPoint:KNEE_R:250,270,450 init=synthPoint:TOE_R:250,400,25
+
+$findMarkers in=data/converted/JB/Post/DS_LL1.tsv init=synthPoint:KNEE_R:250,270,450 init=synthPoint:TOE_R:250,400,25
+$findMarkers in=data/converted/JB/Post/DS_LL2.tsv init=synthPoint:KNEE_R:250,270,450 init=synthPoint:TOE_R:250,400,25
+$findMarkers in=data/converted/JB/Post/DS_LL3.tsv init=synthPoint:KNEE_R:250,270,450 init=synthPoint:TOE_R:250,400,25
+
+$findMarkers in=data/converted/JB/Post/DS_NM2.tsv init=synthPoint:KNEE_R:250,270,450 init=synthPoint:TOE_R:250,400,25
+$findMarkers in=data/converted/JB/Post/DS_NM3.tsv init=synthPoint:KNEE_R:250,270,450 init=synthPoint:TOE_R:250,400,25
+
+$findMarkers in=data/converted/JB/Post/SEBTd_LL1.tsv init=synthPoint:TOE_R:250,400,25
+
+$findMarkers in=data/converted/AP/Post/DS_M3.tsv init=force-_leftAnkle:lank,_rightAnkle:rank,_leftToe:ltoe,_rightToe:rtoe,_leftKnee:lkne,_rightKnee:rkne
+
+
+$findMarkers in=data/converted/SK/Pre/DD_M2.tsv init=centerNeck
+$findMarkers in=data/converted/SK/Pre/DD_M3.tsv init=centerNeck
+
+$findMarkers in=data/converted/BL/Pre/DS_LL1.tsv init=centerNeck init=ignore:*5,*24
+$findMarkers in=data/converted/BL/Pre/DS_LL2.tsv init=centerNeck init=ignore:*3,*35,*43,*17,*40,*47
+$findMarkers in=data/converted/BL/Pre/DS_LL3.tsv init=centerNeck init=ignore:*5
+
+$findMarkers in=data/converted/DG/Pre/DS_M3.tsv init=ignore:*14,*15,*18,*13
+$findMarkers in=data/converted/CS/Pre/DD_NM3.tsv init=ignore:*12,*13
+$findMarkers in=data/converted/EB/Post/DD_M1.tsv init=ignore:*2
+
 
 ####
 # valid initialization flags
@@ -17,4 +54,4 @@ $findMarkers in=data/converted/AP/Post/SEBTT_NM1.tsv init=switchFeet
 #init=switchLeftAnkleToe
 #init=switchRightAnkleToe
 #init=windowSize:1000 (or any number)
-
+#init=centerNeck

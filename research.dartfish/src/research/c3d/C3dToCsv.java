@@ -37,9 +37,13 @@ public class C3dToCsv
 			if (metaData.dataDescription.markerLabels == null)
 				throw new DataMissing("No marker labels in C3D file");
 			
+			int nullFields = 0;
 			ArrayList<String> fields = new ArrayList<String>();
 			for (String label : metaData.dataDescription.markerLabels)
 			{
+				if (label == null)
+					label = "NULL+"+nullFields++;
+				
 				fields.add(label.trim() + ":X");
 				fields.add(label.trim() + ":Y");
 				fields.add(label.trim() + ":Z");

@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.math3.analysis.function.Max;
 import org.apache.commons.math3.analysis.interpolation.LoessInterpolator;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
@@ -44,6 +45,12 @@ public class Maths
 		return a;
 	}
 	
+	public static <Record> double average (ArrayList<Record> comps, String fieldName)
+	{
+		double[][] values = toXYArrays(comps, fieldName, false, false, null);
+		return average(values[1]);
+	}
+	
 	public static double average (double[] v)
 	{
 		double total = 0;
@@ -55,13 +62,37 @@ public class Maths
 		return average;
 	}
 	
+	public static Double max (double[] vs)
+	{
+		Double d = null;
+		for (double v : vs)
+		{
+			if (d == null || v > d)
+				d = v;
+		}
+		
+		return d;
+	}
+
+	public static <Record> Double max (ArrayList<Record> comps, String fieldName)
+	{
+		double[][] values = toXYArrays(comps, fieldName, false, false, null);
+		return max(values[1]);
+	}
+	
 	public static double stddev (double[] v)
 	{
 		StandardDeviation stddev = new StandardDeviation();
 		double sd = stddev.evaluate(v);
 		return sd;
 	}
-	
+
+	public static <Record> double stddev (ArrayList<Record> comps, String fieldName)
+	{
+		double[][] values = toXYArrays(comps, fieldName, false, false, null);
+		return stddev(values[1]);
+	}
+
 	public static <Record> int findPeak (int direction, ArrayList<Record> comps, int startingIndex, PeakFinder<Record> c)
 	{
 		int peakIndex = -1;
@@ -270,8 +301,13 @@ public class Maths
 			System.out.println(e);
 		}
 	}
-	
+
 	public static <Record> double[][] toXYArrays (List<Record> comps, String inFieldName, Double defaultValue)
+	{
+		return toXYArrays(comps, inFieldName, true, true, defaultValue);
+	}
+	
+	public static <Record> double[][] toXYArrays (List<Record> comps, String inFieldName, boolean useForward, boolean useDefaultValue, Double defaultValue)
 	{
 		try
 		{
@@ -284,34 +320,37 @@ public class Maths
 				ArrayList<Double> y = new ArrayList<Double>();
 				for (int i=0; i<comps.size(); ++i)
 				{
+					boolean found = false;
+					
 					Record c = comps.get(i);
 					Double value = (Double)inField.get(c);
 					if (value != null)
 					{
 						x.add((double)i);
 						y.add(value);
+						found = true;
 					}
-					else
+					
+					if (!found && useForward)
 					{
-						boolean foundForwardValue = false;
 						for (int j=i; j<comps.size(); j++)
 						{
 							Double forwardValue = (Double)inField.get(comps.get(j));
 							if (forwardValue != null)
 							{
-								foundForwardValue = true;
+								found = true;
 								x.add((double)i);
 								y.add(forwardValue);
 								break;
 							}
 						}
-						
-						if (!foundForwardValue)
-							//&& defaultValue != null)
-						{
-							x.add((double) i);
-							y.add(defaultValue);
-						}
+					}
+					
+					if (!found && useDefaultValue)
+					{
+						x.add((double) i);
+						y.add(defaultValue);
+						found = true;
 					}
 				}
 				
@@ -341,6 +380,20 @@ public class Maths
 		} 
 	}
 	
+	public static <Record> Object getMemberField (Record comp, String outFieldName)
+	{
+		try
+		{
+			Field outField;
+			outField = comp.getClass().getField(outFieldName);
+			return outField.get(comp);
+		} 
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		} 
+	}
+
 	public static <Record> void butterworth(List<Record> comps, String inFieldName, String outFieldName,
 			int filterOrder, double fcf1)
 	{
