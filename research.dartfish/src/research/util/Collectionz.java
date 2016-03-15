@@ -66,4 +66,30 @@ public class Collectionz
 		}
 		return m;
 	}
+	
+	public static <T> boolean isFirst(Collection<T> c, T o)
+	{
+		for (T e : c)
+		{
+			if (e.equals(o))
+				return true;
+			
+			return false;
+		}
+		
+		return false;
+	}
+
+	public static <T> boolean isFirst(T[] c, T o)
+	{
+		for (T e : c)
+		{
+			if (e.equals(o))
+				return true;
+			
+			return false;
+		}
+		
+		return false;
+	}
 }
