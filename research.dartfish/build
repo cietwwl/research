@@ -3,5 +3,7 @@ set -x
 rm -rf bin
 mkdir bin
 find . -name "*.java" > sources.txt
-javac @sources.txt -d bin/ -cp libs/commons-csv-1.1/commons-csv-1.1.jar:libs/vecmath.jar
+javac @sources.txt -d bin/ -cp  bin:libs/commons-csv-1.1/commons-csv-1.1.jar:libs/vecmath.jar:libs/jfreechart-1.0.19.jar:libs/dsp-collection.jar:libs/commons-math3-3.5/commons-math3-3.5.jar:libs/jcommon-1.0.23.jar
+
+#libs/commons-csv-1.1/commons-csv-1.1.jar:libs/vecmath.jar
 rm sources.txt
