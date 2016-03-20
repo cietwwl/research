@@ -2,6 +2,7 @@ package research.math;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,22 @@ public class Maths
 		}
 		
 		return a;
+	}
+
+	public static double[] toDoubleArrayIgnoreInvalids (Collection<Double> c)
+	{
+		double[] a = new double[c.size()];
+		int i=0;
+		for (Double d : c)
+		{
+			if (d != null)
+			{
+				if (!d.isInfinite() && !d.isNaN())
+					a[i++] = d; 
+			}
+		}
+		
+		return Arrays.copyOf(a,  i);
 	}
 
 	public static double[] only (Collection<Vector3> c, int i)
@@ -77,6 +94,17 @@ public class Maths
 		return d;
 	}
 
+	public static Double min (double[] vs)
+	{
+		Double d = null;
+		for (double v : vs)
+		{
+			if (d == null || v < d)
+				d = v;
+		}
+		
+		return d;
+	}
 	public static <Record> Double max (ArrayList<Record> comps, String fieldName)
 	{
 		double[][] values = toXYArrays(comps, fieldName, false, false, null);
@@ -326,6 +354,28 @@ public class Maths
 	public static <Record> double[][] toXYArrays (List<Record> comps, String inFieldName, Double defaultValue)
 	{
 		return toXYArrays(comps, inFieldName, true, true, defaultValue);
+	}
+	
+	public static <Result, Record> Collection<Result> values (List<Record> comps, String inFieldName)
+	{
+		try
+		{
+			Field inField = comps.get(0).getClass().getField(inFieldName);
+	
+			ArrayList<Result> c = new ArrayList<Result>();
+			for (Record r : comps)
+			{
+				Result value = (Result)inField.get(r);
+				if (value != null)
+					c.add(value);
+			}
+			
+			return c;
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
 	}
 	
 	public static <Record> double[][] toXYArrays (List<Record> comps, String inFieldName, boolean useForward, boolean useDefaultValue, Double defaultValue)

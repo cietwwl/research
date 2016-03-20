@@ -84,6 +84,7 @@ public class FindStandingLegAnglePeaks
 	static public class Comp
 	{
 		public int frame;
+		public Vector3 sacrumXYZ;
 		public Double sacrum;
 		public Double sacrumBW;
 		public Double sacrumSmooth, sacrumAverage, sacrumTest;
@@ -247,7 +248,10 @@ public class FindStandingLegAnglePeaks
 			Map<String, Object> row = csvIn.rows.get(currentRow);
 
 			if (Collectionz.mapContainsAllAndNotNull(row, S.centerHip))
+			{
 				c.sacrum = ((Vector3) row.get(S.centerHip)).z;
+				c.sacrumXYZ = (Vector3) row.get(S.centerHip);
+			}
 			
 			for (int s=S.left; s<=S.right; ++s)
 			{
@@ -303,6 +307,27 @@ public class FindStandingLegAnglePeaks
 		
 		int filterOrder = 1;
 		double fcf1 = 0.05;
+		
+		double[] sacrumX = Maths.only(Maths.<Vector3, Comp>values(comps, "sacrumXYZ"), 0);
+		double[] sacrumY = Maths.only(Maths.<Vector3, Comp>values(comps, "sacrumXYZ"), 1);
+		Double sacrumDX = null;
+		try
+		{
+			sacrumDX = Maths.max(sacrumX) - Maths.min(sacrumX);
+		}
+		catch (Exception e)
+		{
+			log.println("no sacrum dx");
+		}
+		Double sacrumDY = null;
+		try
+		{
+			sacrumDY = Maths.max(sacrumY) - Maths.min(sacrumY);
+		}
+		catch (Exception e)
+		{
+			log.println("no sacrum dy");
+		}
 		
 		Maths.butterworth(comps, "sacrum", "sacrumBW", filterOrder, fcf1);		
 		Maths.smooth(comps, "sacrum", "sacrumSmooth", "sacrumAverage", "sacrumTest", bandwidth, cycles);
@@ -516,6 +541,8 @@ public class FindStandingLegAnglePeaks
 		finalData.put("PelAvg", pelvicAngleAverage);
 		finalData.put("PelMax", pelvicAngleMax);
 		finalData.put("PelStd", pelvicAngleStdDev);
+		finalData.put("SacrumDX", sacrumDX);
+		finalData.put("SacrumDY", sacrumDY);
 		
 		String[] keysOrder = { 
 			"MaxAnk1", "MaxAnk2", "MaxAnk3", "MaxAnkAvg",
@@ -523,6 +550,7 @@ public class FindStandingLegAnglePeaks
 			"MaxAnkFrame1", "MaxAnkFrame2", "MaxAnkFrame3",
 			"MaxKneeFrame1", "MaxKneeFrame2", "MaxKneeFrame3",
 			"PelAvg", "PelMax", "PelStd",
+			"SacrumDX", "SacrumDY"
 		};
 		
 		Object[] otherDatas = {

@@ -21,6 +21,7 @@ public class CreateMasterSpreadSheet
 			"MaxAnkFrame1", "MaxAnkFrame2", "MaxAnkFrame3",
 			"MaxKneeFrame1", "MaxKneeFrame2", "MaxKneeFrame3",
 			"PelAvg", "PelMax", "PelStd",
+			"SacrumDX", "SacrumDY",
 			"TrialAvgAnk", "TrialMaxAnk", "TrialStdAnk", 
 			"TrialAvgKnee", "TrialMaxKnee", "TrialStdKnee"
 	} ;
