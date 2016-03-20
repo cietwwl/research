@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import research.math.Vector3;
+
 public class Collectionz
 {
 	public static boolean mapContainsAll(Map<?, ?> map, String... keys)
@@ -91,5 +93,29 @@ public class Collectionz
 		}
 		
 		return false;
+	}
+
+	public static boolean mapContainsAllAndNotNullAndNotZero(Map<?, ?> map, String... keys)
+	{
+		if (map == null)
+			return false;
+		
+		for (String key : keys)
+		{
+			if (!map.containsKey(key))
+				return false;
+			
+			Object v = map.get(key);
+			if (v == null)
+				return false;
+			
+			if (v.equals(0.0))
+				return false;
+			
+			if (v.equals(Vector3.Zero))
+				return false;
+		}
+		
+		return true;
 	}
 }

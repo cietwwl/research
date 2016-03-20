@@ -8,6 +8,9 @@ import java.util.Map;
 
 import org.apache.commons.math3.analysis.function.Max;
 import org.apache.commons.math3.analysis.interpolation.LoessInterpolator;
+import org.apache.commons.math3.exception.NoDataException;
+import org.apache.commons.math3.exception.NotFiniteNumberException;
+import org.apache.commons.math3.exception.NumberIsTooSmallException;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
 import biz.source_code.dsp.filter.FilterCharacteristicsType;
@@ -278,7 +281,25 @@ public class Maths
 			double a = Maths.average(yd);
 	
 			LoessInterpolator li = new LoessInterpolator(bandwidth, robustness);
-			double[] smooth = li.smooth(xd, yd);
+			double[] smooth = null;
+			try
+			{
+				 smooth = li.smooth(xd, yd);
+			}
+			catch (NumberIsTooSmallException e)
+			{
+				smooth = yd;
+			}
+			catch (NoDataException e)
+			{
+				smooth = yd;
+			}
+			catch (NotFiniteNumberException e)
+			{
+				e.printStackTrace();
+				smooth = yd;
+			}
+			
 			for (int i=0; i<smooth.length; ++i)
 			{
 				int frame = (int)xd[i];

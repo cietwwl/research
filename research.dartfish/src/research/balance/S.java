@@ -3,18 +3,18 @@ package research.balance;
 public class S
 {
 	public static final String 
-		rightShoulder = "_rightShoulder" ,
-		neck = "_neck",
-		leftShoulder = "_leftShoulder",
-		rightHip = "_rightHip", 
-		centerHip = "_centerHip",
-		leftHip = "_leftHip",
-		rightKnee = "_rightKnee",
-		leftKnee = "_leftKnee",
-		leftAnkle = "_leftAnkle",
-		leftToe = "_leftToe",
-		rightAnkle = "_rightAnkle",
-		rightToe = "_rightToe";
+		rightShoulder = "rsho" ,
+		neck = "n/a",
+		leftShoulder = "lsho",
+		rightHip = "rpsi", 
+		centerHip = "sac",
+		leftHip = "lpsi",
+		rightKnee = "rkne",
+		leftKnee = "lkne",
+		leftAnkle = "lank",
+		leftToe = "ltoe",
+		rightAnkle = "rank",
+		rightToe = "rtoe";
 	
 	public static final String 
 		PrightShoulder = "p_rightShoulder" ,

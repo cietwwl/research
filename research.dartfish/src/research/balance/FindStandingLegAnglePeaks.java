@@ -201,19 +201,19 @@ public class FindStandingLegAnglePeaks
 //		dataset.addSeries(kneeAngleLeft);
 
 		dataset.addSeries(sacrum);
-		dataset.addSeries(ankleAngleRightBW);
-		dataset.addSeries(kneeAngleRightBW);
-		dataset.addSeries(ankleAngleLeftBW);
-		dataset.addSeries(kneeAngleLeftBW);
+//		dataset.addSeries(ankleAngleRightBW);
+//		dataset.addSeries(kneeAngleRightBW);
+//		dataset.addSeries(ankleAngleLeftBW);
+//		dataset.addSeries(kneeAngleLeftBW);
 
 		dataset.addSeries(ankleAngleRight);
 		dataset.addSeries(kneeAngleRight);
 		dataset.addSeries(ankleAngleLeft);
 		dataset.addSeries(kneeAngleLeft);
 		
-		dataset.addSeries(pelvicAngle);
-		dataset.addSeries(pelvicAngleBW);
-		dataset.addSeries(pelvicAngleAverage);
+//		dataset.addSeries(pelvicAngle);
+//		dataset.addSeries(pelvicAngleBW);
+//		dataset.addSeries(pelvicAngleAverage);
 //		dataset.addSeries(pelvicAngleTest);
 		
 		final JFreeChart chart = ChartFactory.createXYLineChart(
@@ -251,7 +251,7 @@ public class FindStandingLegAnglePeaks
 			
 			for (int s=S.left; s<=S.right; ++s)
 			{
-				if (Collectionz.mapContainsAllAndNotNull(row, S.toe[s], S.ankle[s], S.knee[s], S.hip[s]))
+				if (Collectionz.mapContainsAllAndNotNullAndNotZero(row, S.toe[s], S.ankle[s], S.knee[s], S.hip[s]))
 				{
 					c.ankleAngles[s] = Vectors.findAngleAndAxisBetweenLimbsOfThreeJoints(
 						(Vector3) row.get(S.toe[s]),
@@ -456,7 +456,7 @@ public class FindStandingLegAnglePeaks
 		String ankleField = reversedSubject ? "ankleAngleRight" : "ankleAngleLeft";
 		String kneeField = reversedSubject ? "kneeAngleRight" : "kneeAngleLeft";
 		
-		String[] m = RegE.match(inFileName, ".*/(.+?)/(.+?)/(.+?)_(.+?)\\.tsv");
+		String[] m = RegE.match(inFileName, ".*/(.+?)/(.+?)/(.+?)[_ ]+(.+?)\\..*?");
 		String key = 
 			m[0].toUpperCase() + "_" +
 			m[1].toUpperCase() + "_" +

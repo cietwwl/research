@@ -55,7 +55,7 @@ public class CreateMasterSpreadSheet
 		for (String trial : trials)
 		{
 			Map<String, Object> sums = new HashMap<String, Object>();
-			int count = 0;
+			Map<String, Double> counts = new HashMap<String, Double>();
 			for (Entry<String, Map<String, Object>> tr : trialToRow.entrySet())
 			{
 				if (!tr.getKey().startsWith(trial))
@@ -69,16 +69,19 @@ public class CreateMasterSpreadSheet
 						continue;
 					
 					double value = (double) sums.getOrDefault(kv.getKey(), 0.0);
-					value += (double) kv.getValue();
-					sums.put(kv.getKey(), value);
+					Double kvd = (Double) kv.getValue();
+					if (!kvd.isNaN() && !kvd.isInfinite())
+					{
+						value += (double) kvd;
+						sums.put(kv.getKey(), value);
+						counts.put(kv.getKey(), (double)counts.getOrDefault(kv.getKey(), 0.0) + 1.0);
+					}
 				}
-				
-				count++;
 			}
 			
 			for (Entry<String, Object> kv : sums.entrySet())
 			{
-				kv.setValue(((double)kv.getValue())/count);
+				kv.setValue(((double)kv.getValue())/counts.get(kv.getKey()));
 			}
 
 			sums.put("trial", "AVG");

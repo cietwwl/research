@@ -14,12 +14,15 @@ public class FindStandingLegAnglePeaksAll
 	{
 		String source = "markers";
 		
-		List<String> files = Filez.findAllFilesWithExtension("data/" + source, "tsv");
+		List<String> files = Filez.findAllFilesWithExtension("data/" + source, "txt");
 		for (String inFile : files)
 		{
 			if (!inFile.toLowerCase().contains("dd") && !inFile.toLowerCase().contains("ds"))
 				continue;
 			
+			if (inFile.contains("._"))
+				continue;
+				
 			String outFile = 
 				Filez.replaceExtension(
 					Filez.replaceFirstDirectoryPart(inFile, source, "standingleg/compute"),

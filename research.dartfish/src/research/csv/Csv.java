@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
@@ -16,6 +17,7 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 
+import research.exceptions.DataException;
 import research.math.Vector3;
 import research.util.Sortz;
 
@@ -63,6 +65,7 @@ public class Csv
 	
 	protected Csv (String inFileName, int skipRows, int skipColumns) throws IOException
 	{
+		HashSet<String> columns = new HashSet<String>();
 		CSVParser parser = CSVFormat.TDF.parse(new FileReader(inFileName));
 		
 		ArrayList<Field> fields = new ArrayList<Field>();
@@ -79,7 +82,14 @@ public class Csv
 			{
 				for (int i=skipColumns; i<csvRecord.size(); ++i)
 				{
-					Field f = new Field(csvRecord.get(i), i);
+					String rec = csvRecord.get(i);
+					
+					if (columns.contains(rec))
+						throw new DataException("DuplicateColumnName " + rec + " in file " + inFileName);
+					
+					columns.add(rec);
+					
+					Field f = new Field(rec, i);
 					if (f.prefix != null)
 						prefix = f.prefix;
 					
@@ -134,7 +144,7 @@ public class Csv
 			}
 		}
 	}
-	
+
 	private void addColumn(String name, Class<?> clazz)
 	{
 		if (clazz == null)
